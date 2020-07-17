@@ -1,17 +1,25 @@
 #!/usr/bin/env bash
 # File: guessinggame.sh
 
-function guessing_game {
- echo "How many files are there in the current directory?" 
+correct_answer=$(ls -la | awk '{print $9}' | grep -E "[^\.]|[^\.\.]" | wc -l | grep -Eo "[0-9]+")
+ echo "How many files (including directories, symlinks and hidden files) are there in the current directory?" 
  echo "(the current directory is: $(pwd))"
- correct_answer=$(ls -la | grep -E "^\-" | wc -l | grep -Eo "[0-9]+")
+
+function guessing_game {
  read response
 }
+
 
 guessing_game
 
   while [[ $response -ne $correct_answer ]]
 	do
+		if [[ $response =~ [^0-9]+ ]]
+			then	
+				echo "Please enter a number in the decimal (base 10) system"
+				guessing_game
+		fi
+
 		if [[ $response -gt $correct_answer ]]
 			then
 				echo "You entered $response, which is too high!  Please try again!"
